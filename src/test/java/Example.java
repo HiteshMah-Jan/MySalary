@@ -1,0 +1,65 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright (c) 2020, Nora Cos <https://github.com/mew>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. Neither the name of the copyright holder nor the names of its
+ *    contributors may be used to endorse or promote products derived from
+ *    this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import zone.nora.coronavirus.Coronavirus;
+import zone.nora.coronavirus.data.latest.Latest;
+import zone.nora.coronavirus.sources.Sources;
+
+import java.io.IOException;
+
+public class Example {
+    public static void main(String[] args) throws IOException {
+        // Create an instance of the API.
+        Coronavirus coronavirus = new Coronavirus();
+        // Get latest data.
+        Latest latest = coronavirus.getLatest();
+
+        System.out.println("Confirmed Cases: " + latest.getConfirmed());
+
+        // Get data for everywhere:
+        coronavirus.getLocations().forEach(location -> {
+            System.out.println(location.getProvince() + ": " + location.getLatest().getConfirmed());
+        });
+
+        // Get data for a country:
+        Latest latestBelgium = coronavirus.getLocationsByCountryCode("BE").getLatest();
+        System.out.println("Confirmed cases in Belgium: " + latestBelgium.getConfirmed());
+
+        // Get data for a province:
+        Latest latestOntario = coronavirus.getLocationsByProvince("Ontario").getLatest();
+        System.out.println("Deaths in Ontario: " + latestOntario.getDeaths());
+
+        // Get data via a different source:
+        Latest latestCSBS = coronavirus.getLatest(Sources.CSBS);
+        System.out.println("Confirmed cases according to CSBS: " + latestCSBS.getConfirmed());
+    }
+}
